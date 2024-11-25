@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+	<link rel="stylesheet" href="/css/styles.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<style>
+		/* General reset */
+		body {
+		    margin: 0;
+		    padding: 0;
+		    font-family: 'Roboto', sans-serif;
+		    background: url('/img/gym.jpg') no-repeat center center fixed;
+		    background-size: cover;
+		    color: #f9f9f9;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    height: 100vh;
+		    position: relative;
+		    overflow: hidden;
+		}
+
+		/* Capa de superposición */
+		body::before {
+		    content: '';
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		    background: rgba(0, 0, 0, 0.6); /* Oscurece la imagen de fondo */
+		    z-index: 0;
+		}
+
+		/* Contenedor del login */
+		.login-container {
+		    position: relative;
+		    background: rgba(255, 255, 255, 0.1);
+		    padding: 2rem;
+		    border-radius: 10px;
+		    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+		    width: 350px;
+		    text-align: center;
+		    animation: fadeIn 1s ease-in-out;
+		    z-index: 1;
+		    backdrop-filter: blur(10px);
+		}
+
+		/* Título */
+		.login-container h1 {
+		    font-size: 2rem;
+		    color: #00d26a;
+		    margin-bottom: 1.5rem;
+		    font-weight: 700;
+		}
+
+		/* Contenedor para ícono y etiqueta */
+		.label-container {
+		    display: flex;
+		    align-items: center;
+		    margin-bottom: 0.5rem;
+		    color: #f9f9f9;
+		    font-size: 1rem;
+		    font-weight: 500;
+		}
+
+		.label-container i {
+		    margin-right: 0.5rem;
+		    color: #00d26a;
+		    font-size: 1.2rem;
+		}
+
+		/* Contenedor del input */
+		.input-container {
+		    position: relative;
+		    margin-bottom: 1rem;
+		}
+
+		.input-container input {
+		    width: 100%;
+		    padding: 0.8rem;
+		    margin-bottom: 0;
+		    border: 1px solid rgba(255, 255, 255, 0.3);
+		    border-radius: 5px;
+		    background: rgba(255, 255, 255, 0.1);
+		    color: #fff;
+		    font-size: 1rem;
+		    outline: none;
+		    transition: border-color 0.3s, background 0.3s;
+		}
+
+		.input-container input:focus {
+		    border-color: #00d26a;
+		    background: rgba(255, 255, 255, 0.3);
+		}
+
+		/* Botón */
+		.login-container button {
+		    background: #00d26a;
+		    border: none;
+		    padding: 0.8rem 1rem;
+		    border-radius: 5px;
+		    color: #fff;
+		    font-size: 1rem;
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: background 0.3s;
+		    width: 100%;
+		    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+		}
+
+		.login-container button:hover {
+		    background: #00b758;
+		}
+
+
+		/* Animación */
+		@keyframes fadeIn {
+		    from {
+		        opacity: 0;
+		        transform: translateY(-20px);
+		    }
+		    to {
+		        opacity: 1;
+		        transform: translateY(0);
+		    }
+		}
+
+		/* Responsividad */
+		@media (max-width: 400px) {
+		    .login-container {
+		        width: 90%;
+		    }
+		}
+
+	</style>
+
+	<script>
+	    function handleLogin(event) {
+	        event.preventDefault(); // Evita el comportamiento por defecto del formulario
+	        const formData = new FormData(event.target);
+	        
+	        fetch('/api/login', {
+	            method: 'POST',
+	            body: new URLSearchParams(formData)
+	        })
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error(response.status); // Maneja errores según el estado HTTP
+	            }
+	            return response.text();
+	        })
+	        .then(redirectUrl => {
+	            window.location.href = redirectUrl; // Redirige al URL retornado
+	        })
+	        .catch(error => {
+	            if (error.message === '401') {
+	                alert('Credenciales incorrectas. Intente nuevamente.');
+	            } else if (error.message === '403') {
+	                alert('Acceso denegado.');
+	            } else {
+	                alert('Ocurrió un error inesperado.');
+	            }
+	        });
+	    }
+	</script>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Inicio de Sesión</h1>
+        <form onsubmit="handleLogin(event)">
+            <label for="email">Email:</label>
+			<i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="password">Contraseña:</label>
+			<i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit">Ingresar</button>
+        </form>
+    </div>
+</body>
+</html>

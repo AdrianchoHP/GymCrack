@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard Miembro</title>
+</head>
+<style>
+    /* General reset */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background: url('/img/gym3.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Capa de superposición */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Oscurece la imagen de fondo */
+        z-index: 0;
+    }
+
+    /* Encabezado */
+    h1 {
+        font-size: 3rem;
+        color: #00d26a;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra al texto */
+        z-index: 1;
+        position: relative;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        color: #f9f9f9;
+        margin-bottom: 2rem;
+        text-align: center;
+        z-index: 1;
+        position: relative;
+    }
+
+    /* Lista de navegación */
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        z-index: 1;
+        position: relative;
+    }
+
+    /* Estilo de los enlaces */
+    ul li a {
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #fff;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-align: center;
+        display: block;
+        width: 250px; /* Botones más grandes */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para destacar los enlaces */
+    }
+
+    /* Hover effect */
+    ul li a:hover {
+        background: #00d26a;
+        border-color: #00b758;
+        color: #0c0f0a;
+        box-shadow: 0 6px 15px rgba(0, 210, 106, 0.4); /* Mayor sombra al pasar el mouse */
+    }
+
+    /* Botones específicos */
+    ul li a.btn-primary {
+        background: #00d26a;
+        color: #0c0f0a;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 210, 106, 0.4);
+    }
+
+    ul li a.btn-primary:hover {
+        background: #00b758;
+        box-shadow: 0 6px 15px rgba(0, 210, 106, 0.6);
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        ul li a {
+            font-size: 1.2rem;
+            width: 200px;
+        }
+    }
+
+    a.btn-danger {
+        position: relative;
+        z-index: 1000;
+    }
+
+</style>
+<body>
+    <h1 th:text="'Bienvenido ' + ${session.usuario.nombre}">Bienvenido Miembro</h1>
+    <h2 th:text="'Estado: ' + ${session.usuario.estado}">Estado del Miembro</h2>
+    <ul>
+        <li><a href="/admin/clases/disponibles">Clases Disponibles</a></li>
+        <li><a href="#" th:href="@{/usuario/reservas/mis-reservas/{id}(id=${session.usuario.id})}">Mis Reservas</a></li>
+        <li><a href="/horarios/ver">Horario Del Gym</a></li>
+        <li><a href="/calendario">Calendario</a></li>
+    </ul>
+    <br><br><br>
+    <a href="/logout" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?');" style="background-color: #d9534f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;" class="btn btn-danger">Cerrar sesión</a>
+</body>
+</html>

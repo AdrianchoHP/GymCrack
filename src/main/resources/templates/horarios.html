@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Horarios</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Fondo general */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+            color: #f9f9f9;
+        }
+
+        /* Barra superior */
+        .top-bar {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-back {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            background: #00d26a;
+            color: #0c0f0a;
+            border-color: #00b758;
+        }
+
+        /* Encabezado principal */
+        h1, h2 {
+            color: #00d26a;
+            text-align: center;
+        }
+
+        /* Tabla */
+        table {
+            width: 90%;
+            margin: 2rem auto;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background: #00d26a;
+            color: #0c0f0a;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Formularios */
+        form {
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #00d26a;
+        }
+
+        form input, form select, form button {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f9f9f9;
+        }
+
+        form button {
+            background: #00d26a;
+            color: #0c0f0a;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background: #00b758;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 10% auto;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .modal-content h2 {
+            color: #00d26a;
+        }
+
+        .close {
+            color: #f9f9f9;
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="btn-back" onclick="window.location.href='/dashboard/admin'">Volver</button>
+    </div>
+    <h1>Gestión de Horarios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Día</th>
+                <th>Hora de Apertura</th>
+                <th>Hora de Cierre</th>
+                <th>Entrenador Asignado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="horarios-tbody">
+            <!-- Los datos se rellenarán dinámicamente -->
+        </tbody>
+    </table>
+
+    <h2>Nuevo Horario</h2>
+    <form id="nuevo-horario-form">
+        <label for="dia">Día:</label>
+        <input type="text" id="dia" name="dia" required>
+        <label for="apertura">Hora de Apertura:</label>
+        <input type="time" id="apertura" name="apertura" required>
+        <label for="cierre">Hora de Cierre:</label>
+        <input type="time" id="cierre" name="cierre" required>
+        <label for="entrenador">Entrenador:</label>
+        <select id="entrenador" name="entrenador" required>
+            <!-- Opciones dinámicas -->
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+
+    <!-- Modal para editar horario -->
+    <div id="editar-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="cerrar-modal-editar">&times;</span>
+            <h2>Editar Horario</h2>
+            <form id="editar-horario-form">
+                <input type="hidden" id="editar-id">
+                <label for="editar-dia">Día:</label>
+                <input type="text" id="editar-dia" name="dia" required>
+                <label for="editar-apertura">Hora de Apertura:</label>
+                <input type="time" id="editar-apertura" name="apertura" required>
+                <label for="editar-cierre">Hora de Cierre:</label>
+                <input type="time" id="editar-cierre" name="cierre" required>
+                <label for="editar-entrenador">Entrenador:</label>
+                <select id="editar-entrenador" name="entrenador" required>
+                    <!-- Opciones dinámicas -->
+                </select>
+                <button type="submit">Actualizar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = '/api/horarios';
+        const apiUrlEntrenadores = '/api/entrenadores';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            cargarHorarios();
+            cargarEntrenadores();
+
+            document.getElementById('cerrar-modal-editar').addEventListener('click', function () {
+                document.getElementById('editar-modal').style.display = 'none';
+            });
+        });
+
+		function cargarHorarios() {
+		    console.log('Cargando horarios...'); // Debug
+		    fetch(apiUrl)
+		        .then(response => {
+		            if (!response.ok) {
+		                throw new Error(`HTTP error! status: ${response.status}`);
+		            }
+		            return response.json();
+		        })
+		        .then(data => {
+		            console.log('Datos recibidos:', data); // Debug
+		            const tbody = document.getElementById('horarios-tbody');
+		            tbody.innerHTML = '';
+		            data.forEach(horario => {
+		                const row = document.createElement('tr');
+		                row.innerHTML = `
+		                    <td>${horario.dia}</td>
+		                    <td>${horario.apertura}</td>
+		                    <td>${horario.cierre}</td>
+		                    <td>${horario.entrenador || 'No asignado'}</td>
+		                    <td>
+		                        <button onclick="mostrarEditarModal('${horario.id}', '${horario.dia}', '${horario.apertura}', '${horario.cierre}', '${horario.entrenadorId}')" class="btn-editar">Editar</button>
+		                        <button onclick="eliminarHorario('${horario.id}')" class="btn-eliminar">Eliminar</button>
+		                    </td>
+		                `;
+		                tbody.appendChild(row);
+		            });
+		        })
+		        .catch(error => {
+		            console.error('Error al cargar horarios:', error);
+		            alert('Error al cargar los horarios');
+		        });
+		}
+
+        function cargarEntrenadores() {
+            fetch(apiUrlEntrenadores)
+                .then(response => response.json())
+                .then(data => {
+                    const selectNuevo = document.getElementById('entrenador');
+                    const selectEditar = document.getElementById('editar-entrenador');
+                    selectNuevo.innerHTML = '';
+                    selectEditar.innerHTML = '';
+                    data.forEach(entrenador => {
+                        const option = document.createElement('option');
+                        option.value = entrenador.id;
+                        option.textContent = entrenador.nombre;
+                        selectNuevo.appendChild(option);
+
+                        const optionEditar = document.createElement('option');
+                        optionEditar.value = entrenador.id;
+                        optionEditar.textContent = entrenador.nombre;
+                        selectEditar.appendChild(optionEditar);
+                    });
+                });
+        }
+
+        document.getElementById('nuevo-horario-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const dia = document.getElementById('dia').value;
+            const apertura = document.getElementById('apertura').value;
+            const cierre = document.getElementById('cierre').value;
+            const entrenadorId = document.getElementById('entrenador').value;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dia, apertura, cierre, entrenadorId })
+            })
+                .then(response => response.json())
+                .then(() => {
+                    cargarHorarios();
+                    document.getElementById('nuevo-horario-form').reset();
+                });
+        });
+
+        function mostrarEditarModal(id, dia, apertura, cierre, entrenadorId) {
+            document.getElementById('editar-id').value = id;
+            document.getElementById('editar-dia').value = dia;
+            document.getElementById('editar-apertura').value = apertura;
+            document.getElementById('editar-cierre').value = cierre;
+            document.getElementById('editar-entrenador').value = entrenadorId;
+            document.getElementById('editar-modal').style.display = 'block';
+        }
+
+		function eliminarHorario(id) {
+		    if (confirm('¿Está seguro de que desea eliminar este horario?')) {
+		        console.log('Intentando eliminar horario con ID:', id); // Debug
+
+		        fetch(`${apiUrl}/${id}`, { 
+		            method: 'DELETE',
+		            headers: {
+		                'Content-Type': 'application/json',
+		                'Accept': 'application/json'
+		            }
+		        })
+		        .then(response => {
+		            console.log('Status:', response.status); // Debug
+		            if (!response.ok) {
+		                return response.text().then(text => {
+		                    throw new Error(`Error del servidor: ${text}`);
+		                });
+		            }
+		            return response.text();
+		        })
+		        .then(data => {
+		            console.log('Respuesta exitosa:', data); // Debug
+		            cargarHorarios();
+		            alert('Horario eliminado correctamente');
+		        })
+		        .catch(error => {
+		            console.error('Error detallado:', error); // Debug más detallado
+		            alert(`Error al eliminar el horario: ${error.message}`);
+		        });
+		    }
+		}
+
+		document.getElementById('editar-horario-form').addEventListener('submit', function (event) {
+		    event.preventDefault();
+		    const id = document.getElementById('editar-id').value;
+		    const dia = document.getElementById('editar-dia').value;
+		    const apertura = document.getElementById('editar-apertura').value;
+		    const cierre = document.getElementById('editar-cierre').value;
+		    const entrenadorId = document.getElementById('editar-entrenador').value;
+
+		    fetch(`${apiUrl}/${id}`, {
+		        method: 'PUT',
+		        headers: { 
+		            'Content-Type': 'application/json'
+		        },
+		        body: JSON.stringify({ dia, apertura, cierre, entrenadorId })
+		    })
+		    .then(response => {
+		        if (!response.ok) {
+		            throw new Error('Error al actualizar el horario');
+		        }
+		        return response.json();
+		    })
+		    .then(() => {
+		        cargarHorarios();
+		        document.getElementById('editar-modal').style.display = 'none';
+		    })
+		    .catch(error => {
+		        console.error('Error:', error);
+		        alert('Error al actualizar el horario');
+		    });
+		});
+    </script>
+</body>
+</html>

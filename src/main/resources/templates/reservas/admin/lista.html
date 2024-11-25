@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administrar Clases</title>
+</head>
+
+<body>
+    <h1>Clases</h1>
+    <a href="/admin/clases/nueva">Crear Nueva Clase</a>
+    <ul>
+        <th:block th:each="clase : ${clases}">
+            <li>
+                <span th:text="${clase.nombre}">Nombre de la clase</span> -
+                <a th:href="@{'/admin/clases/editar/' + ${clase.id}}">Editar</a> -
+                <a th:href="@{'/admin/clases/eliminar/' + ${clase.id}}">Eliminar</a>
+            </li>
+        </th:block>
+    </ul>
+</body>
+</html>

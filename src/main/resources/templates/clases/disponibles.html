@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clases Disponibles</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('/img/gym3.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #00d26a;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Tabla */
+        table {
+            width: 90%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(0, 0, 0, 0.7); /* Más opaco para destacar contra el fondo */
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f9f9f9; /* Contraste mejorado */
+        }
+
+        th {
+            background: #00d26a;
+            color: #0c0f0a;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 210, 106, 0.2);
+        }
+
+        /* Botones */
+        a, button {
+            background: #00d26a;
+            color: #0c0f0a;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        a:hover, button:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Filtro */
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        form label {
+            color: #f9f9f9;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        form select {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #0c0f0a;
+            outline: none;
+            cursor: pointer;
+        }
+
+        form select:focus {
+            border: 2px solid #00d26a;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            a, button {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Clases Disponibles</h1>
+    <a href="/dashboard/miembro" class="btn-back">Volver</a>
+    
+    <!-- Filtro por categoría -->
+    <form method="get" action="/admin/clases/disponibles">
+        <label for="categoria">Filtrar por categoría:</label>
+        <select id="categoria" name="categoria">
+            <option value="">Todas</option>
+            <option th:each="categoria : ${categorias}" 
+                    th:value="${categoria}" 
+                    th:text="${categoria}">
+            </option>
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Capacidad Máxima</th>
+                <th>Fecha y Hora</th>
+                <th>Entrenador</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="clase : ${clases}">
+                <td th:text="${clase.nombre}">Nombre</td>
+                <td th:text="${clase.categoria}">Categoría</td>
+                <td th:text="${clase.capacidadMaxima}">20</td>
+                <td th:text="${#temporals.format(clase.fechaHora, 'dd/MM/yyyy HH:mm')}">Fecha y Hora</td>
+                <td th:text="${clase.nombreEntrenador}">Entrenador</td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/calendario">Ir al Calendario Para Agendar</a>
+</body>
+</html>

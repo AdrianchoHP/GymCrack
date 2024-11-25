@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clases Disponibles</title>
+</head>
+<body>
+    <h1>Clases Disponibles</h1>
+    <ul>
+        <th:block th:each="clase : ${clases}">
+            <li>
+                <span th:text="${clase.nombre}">Nombre de la clase</span> -
+                <span th:text="${clase.fechaHora}">Fecha y hora</span> -
+                <form th:action="@{/usuario/reservas/reservar/{id}(id=${clase.id})}" method="post">
+                    <input type="hidden" name="idUsuario" th:value="${usuario.id}" />
+                    <button type="submit">Reservar</button>
+                </form>
+            </li>
+        </th:block>
+    </ul>
+</body>
+</html>

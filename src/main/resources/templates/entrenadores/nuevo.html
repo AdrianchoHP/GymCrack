@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${entrenador.id != null} ? 'Editar Entrenador' : 'Nuevo Entrenador'">Nuevo Entrenador</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* General styling for the form */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+            color: #f9f9f9;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00d26a;
+        }
+        label {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        .material-icons {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: #00d26a;
+        }
+        input, textarea, select, button {
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+        input, textarea, select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        input:focus, textarea:focus, select:focus {
+            border: 2px solid #00d26a;
+        }
+        button {
+            background: #00d26a;
+            color: #0c0f0a;
+            margin-top: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #00b758;
+        }
+        /* Botón regresar */
+        .back-btn {
+            display: inline-block;
+            background: #00d26a;
+            color: #0c0f0a;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: background 0.3s ease;
+        }
+        .back-btn:hover {
+            background: #00b758;
+        }
+        /* Select customization */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23ffffff' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Botón Regresar -->
+        <a href="/entrenadores/lista" class="back-btn">Regresar</a>
+        <h1 th:text="${entrenador.id != null} ? 'Editar Entrenador' : 'Registrar Nuevo Entrenador'"></h1>
+        <form th:action="@{/entrenadores}" th:object="${entrenador}" method="post">
+			<!-- Campo oculto para el ID -->
+			<input type="hidden" name="id" th:if="${entrenador.id != null}" th:value="${entrenador.id}" />
+
+            <!-- Nombre -->
+            <label for="nombre"><i class="material-icons">person</i> Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" required />
+
+            <!-- Email -->
+            <label for="email"><i class="material-icons">email</i> Correo Electrónico:</label>
+            <input type="email" id="email" th:field="*{email}" required />
+
+            <!-- Contraseña -->
+            <label for="password"><i class="material-icons">lock</i> Contraseña:</label>
+            <input type="password" id="password" th:field="*{password}" required />
+
+            <!-- Rol -->
+            <label for="rol"><i class="material-icons">security</i> Rol:</label>
+            <select id="rol" th:field="*{rol}" required>
+                <option value="" disabled th:if="${entrenador.rol == null}" selected>Seleccione un rol</option>
+                <option value="Entrenador" th:selected="${entrenador.rol == 'Entrenador'}">Entrenador</option>
+            </select>
+
+            <!-- Dirección -->
+            <label for="direccion"><i class="material-icons">home</i> Dirección:</label>
+            <input type="text" id="direccion" th:field="*{direccion}" required />
+
+            <!-- Teléfono -->
+            <label for="telefono"><i class="material-icons">phone</i> Teléfono:</label>
+            <input type="text" id="telefono" th:field="*{telefono}" required />
+
+            <!-- Especialidad -->
+            <label for="especialidad"><i class="material-icons">fitness_center</i> Especialidad:</label>
+            <input type="text" id="especialidad" th:field="*{especialidad}" required />
+
+            <!-- Disponibilidad -->
+            <label for="disponibilidad"><i class="material-icons">schedule</i> Disponibilidad:</label>
+            <textarea id="disponibilidad" th:field="*{disponibilidad}" rows="4" required></textarea>
+
+            <!-- Botón Guardar -->
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Usuarios</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* General reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+            color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Contenedor general */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            width: 90%;
+            max-width: 1200px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Títulos */
+        .container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00d26a;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Botones */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a.btn {
+            display: inline-block;
+            background: #00d26a;
+            color: #0c0f0a;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        a.btn:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        a.volver {
+            font-size: 1rem;
+            color: #00d26a;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        a.volver:hover {
+            color: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            padding: 0.8rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        table th {
+            background: #00d26a;
+            color: #0c0f0a;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table td {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        table tr:hover td {
+            background: rgba(0, 210, 106, 0.2);
+        }
+
+        /* Acciones */
+        table td a {
+            text-decoration: none;
+            color: #00d26a;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        table td a:hover {
+            color: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Usuarios</h1>
+        <div class="button-group">
+            <a href="/dashboard/admin" class="btn">Volver</a>
+            <a href="/usuarios/nuevo" class="btn">Nuevo Usuario</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Membresía</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.id}"></td>
+                    <td th:text="${usuario.nombre}"></td>
+                    <td th:text="${usuario.email}"></td>
+                    <td th:text="${usuario.direccion ?: 'Sin dirección'}"></td>
+                    <td th:text="${usuario.telefono ?: 'Sin teléfono'}"></td>
+                    <td th:text="${usuario.rol}"></td>
+                    <td th:text="${usuario.estado}"></td>
+                    <td th:text="${usuario.membresia?.tipo ?: 'Sin membresía'}"></td>
+                    <td>
+                        <a th:href="@{/usuarios/editar/{id}(id=${usuario.id})}">Editar</a> |
+                        <a th:href="@{/usuarios/desactivar/{id}(id=${usuario.id})}" onclick="return confirm('¿Estás seguro de que deseas desactivar este usuario?');">Desactivar</a> |
+                        <a th:href="@{/usuarios/eliminar/{id}(id=${usuario.id})}" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
