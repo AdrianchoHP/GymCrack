@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios del Gimnasio</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<style>
+	/* General Reset */
+	body {
+	    margin: 0;
+	    padding: 0;
+	    font-family: 'Roboto', sans-serif;
+	    background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+	    color: #f9f9f9;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    min-height: 100vh;
+	}
+
+	/* Barra superior */
+	.top-bar {
+	    width: 100%;
+	    padding: 1rem;
+	    display: flex;
+	    justify-content: flex-start;
+	    background: rgba(255, 255, 255, 0.1);
+	    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.btn-back {
+	    font-size: 1rem;
+	    font-weight: 600;
+	    color: #fff;
+	    padding: 0.8rem 1.5rem;
+	    background: rgba(255, 255, 255, 0.1);
+	    border: 1px solid rgba(255, 255, 255, 0.2);
+	    border-radius: 8px;
+	    transition: all 0.3s ease;
+	    cursor: pointer;
+	}
+
+	.btn-back:hover {
+	    background: #00d26a;
+	    color: #0c0f0a;
+	    border-color: #00b758;
+	}
+
+	/* Encabezado */
+	h1 {
+	    font-size: 2.8rem;
+	    color: #00d26a;
+	    margin-top: 2rem;
+	    margin-bottom: 2rem;
+	    text-align: center;
+	}
+
+	/* Tabla */
+	table {
+	    width: 90%;
+	    max-width: 800px;
+	    margin: 2rem auto;
+	    border-collapse: collapse;
+	    border-radius: 10px;
+	    overflow: hidden;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	    background: rgba(255, 255, 255, 0.05);
+	}
+
+	thead {
+	    background: #00d26a;
+	    color: #0c0f0a;
+	    font-size: 1.2rem;
+	    text-transform: uppercase;
+	}
+
+	th, td {
+	    padding: 1rem;
+	    text-align: center;
+	    border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	tbody tr {
+	    transition: background 0.3s ease;
+	}
+
+	tbody tr:nth-child(even) {
+	    background: rgba(255, 255, 255, 0.1);
+	}
+
+	tbody tr:hover {
+	    background: rgba(0, 210, 106, 0.2);
+	}
+
+	/* Animaciones y detalles */
+	tbody td {
+	    font-size: 1rem;
+	    color: #f9f9f9;
+	    transition: color 0.3s ease;
+	}
+
+	tbody tr:hover td {
+	    color: #0c0f0a;
+	}
+
+	/* Responsividad */
+	@media (max-width: 768px) {
+	    h1 {
+	        font-size: 2rem;
+	    }
+
+	    table {
+	        font-size: 0.9rem;
+	    }
+
+	    th, td {
+	        padding: 0.8rem;
+	    }
+	}
+
+</style>
+<body>
+	<div class="top-bar">
+	        <a href="/calendario/volver" id="btn-back" class="btn-back">Volver</a>
+	    </div>
+    <h1>Horarios del Gimnasio</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Día</th>
+                <th>Hora de Apertura</th>
+                <th>Hora de Cierre</th>
+                <th>Entrenador Asignado</th>
+            </tr>
+        </thead>
+        <tbody id="horarios-tbody">
+            <!-- Los datos se rellenarán dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+		// Simula la obtención del rol desde el backend
+			        const userRole = "Miembro"; // Cambia esto dinámicamente desde el backend (ejemplo: 'admin' o 'miembro')
+
+			        // Configura el botón según el rol del usuario
+			        const btnBack = document.getElementById('btn-back');
+			        if (userRole === "Administrador") {
+			            btnBack.onclick = () => window.location.href = "/dashboard/admin";
+			        } else {
+			            btnBack.onclick = () => window.location.href = "/dashboard/miembro";
+			        }
+        const apiUrl = '/api/horarios';
+
+        // Cargar horarios al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('horarios-tbody');
+                    tbody.innerHTML = ''; // Limpiar la tabla
+                    data.forEach(horario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${horario.dia}</td>
+                            <td>${horario.apertura}</td>
+                            <td>${horario.cierre}</td>
+                            <td>${horario.entrenador || 'No asignado'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

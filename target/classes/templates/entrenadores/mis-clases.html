@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Clases</title>
+    <style>
+        /* General estilos existentes */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('/img/gym2.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #00d26a;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 90%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background: #00d26a;
+            color: #0c0f0a;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        a {
+            background: #00d26a;
+            color: #0c0f0a;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background: #00b758;
+        }
+
+        /* Estilos del modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background: #2d2e2d;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            color: #f9f9f9;
+        }
+
+        .close-btn {
+            float: right;
+            color: #f9f9f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #00d26a;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mis Clases</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Capacidad Máxima</th>
+                <th>Fecha y Hora</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="clase : ${clases}">
+                <td th:text="${clase.nombre}">Nombre</td>
+                <td th:text="${clase.categoria}">Categoría</td>
+                <td th:text="${clase.capacidadMaxima}">20</td>
+                <td th:text="${#temporals.format(clase.fechaHora, 'dd/MM/yyyy HH:mm')}">Fecha y Hora</td>
+				<td>
+				    <button th:attr="onclick=|mostrarParticipantes('${clase.id}')|">
+				        Ver Participantes
+				    </button>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/dashboard/entrenador" style="margin-top: 2rem;">Volver al Dashboard</a>
+
+	<!-- Modal -->
+	<div id="modalParticipantes" class="modal">
+	    <div class="modal-content">
+	        <span class="close-btn" onclick="cerrarModal()">&times;</span>
+	        <h3>Participantes</h3>
+	        <ul id="listaParticipantes" style="
+	            list-style-type: none;
+	            padding: 0;
+	            margin-top: 1rem;
+	        "></ul>
+	    </div>
+	</div>
+
+    <script>
+		function mostrarParticipantes(claseId) {
+		    fetch(`/admin/clases/participantes/${claseId}`)
+		        .then(response => {
+		            if (!response.ok) {
+		                throw new Error("Error al obtener los participantes");
+		            }
+		            return response.json();
+		        })
+		        .then(data => {
+		            const lista = document.getElementById('listaParticipantes');
+		            lista.innerHTML = ''; // Limpia la lista existente
+		            
+		            // Si no hay participantes
+		            if (data.length === 0 || (data.length === 1 && data[0].nombre === "No hay participantes")) {
+		                const li = document.createElement('li');
+		                li.textContent = "No hay participantes inscritos";
+		                li.style.cssText = `
+		                    color: #00d26a;
+		                    text-align: center;
+		                    font-style: italic;
+		                `;
+		                lista.appendChild(li);
+		            } else {
+		                // Agregar participantes con estilo
+		                data.forEach(participante => {
+		                    const li = document.createElement('li');
+		                    li.textContent = participante.nombre;
+		                    li.style.cssText = `
+		                        background: rgba(255, 255, 255, 0.1);
+		                        margin: 0.5rem 0;
+		                        padding: 0.75rem;
+		                        border-radius: 5px;
+		                        text-align: center;
+		                        color: #f9f9f9;
+		                        transition: background 0.3s ease;
+		                    `;
+		                    
+		                    // Efecto hover
+		                    li.addEventListener('mouseover', () => {
+		                        li.style.background = 'rgba(0, 210, 106, 0.2)';
+		                    });
+		                    li.addEventListener('mouseout', () => {
+		                        li.style.background = 'rgba(255, 255, 255, 0.1)';
+		                    });
+		                    
+		                    lista.appendChild(li);
+		                });
+		            }
+		            
+		            document.getElementById('modalParticipantes').style.display = 'block';
+		        })
+		        .catch(error => {
+		            console.error('Error:', error);
+		            const lista = document.getElementById('listaParticipantes');
+		            lista.innerHTML = '';
+		            const li = document.createElement('li');
+		            li.textContent = "Error al cargar participantes";
+		            li.style.cssText = `
+		                color: #ff4136;
+		                text-align: center;
+		                font-style: italic;
+		            `;
+		            lista.appendChild(li);
+		            document.getElementById('modalParticipantes').style.display = 'block';
+		        });
+		}
+
+		function cerrarModal() {
+		    document.getElementById('modalParticipantes').style.display = 'none';
+		}
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Entrenadores</title>
+    <style>
+        /* General reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+            color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Contenedor general */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem 3rem;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+        }
+
+        /* Títulos */
+        .container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #00d26a;
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Botones */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a.btn {
+            display: inline-block;
+            background: #00d26a;
+            color: #0c0f0a;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-bottom: 1rem;
+        }
+
+        a.btn:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Enlace 'Volver' */
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background: #00d26a;
+            color: #0c0f0a;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-back:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        table th {
+            background: #00d26a;
+            color: #0c0f0a;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        table tr:hover {
+            background: rgba(0, 210, 106, 0.2);
+        }
+
+        /* Enlaces dentro de acciones */
+        table td a {
+            text-decoration: none;
+            color: #00d26a;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        table td a:hover {
+            color: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Listas dentro de celdas */
+        table td ul {
+            padding-left: 1rem;
+            margin: 0;
+            list-style: disc;
+        }
+
+        table td ul li {
+            margin: 0.3rem 0;
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilo del Modal */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro con transparencia */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            color: #f9f9f9;
+            animation: slideIn 0.4s ease-in-out;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: #00d26a;
+            margin-bottom: 1rem;
+        }
+
+        /* Botón de cerrar */
+        .close-btn {
+            color: #fff;
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #00d26a;
+        }
+
+        /* Animaciones */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard/admin" class="btn-back">Volver</a>
+        <h1>Lista de Entrenadores</h1>
+        <a href="/entrenadores/nuevo" class="btn">Agregar Nuevo Entrenador</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Especialidad</th>
+                    <th>Disponibilidad</th>
+                    <th>Clases Asignadas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entrenador : ${entrenadores}">
+                    <td th:text="${entrenador.id}">ID</td>
+                    <td th:text="${entrenador.nombre}">Nombre</td>
+                    <td th:text="${entrenador.especialidad}">Especialidad</td>
+                    <td th:text="${entrenador.disponibilidad}">Disponibilidad</td>
+                    <td>
+                        <ul>
+                            <li th:each="clase : ${entrenador.clasesAsignadas}" 
+                                th:text="${clase.nombre}">Clase</li>
+                        </ul>
+                    </td>
+					<td>
+						<a th:href="@{/entrenadores/editar/{id}(id=${entrenador.id})}">Editar</a>
+					    |
+						<a href="#" th:data-id="${entrenador.id}" onclick="eliminarEntrenador(this)">Eliminar</a>
+					</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+		function eliminarEntrenador(element) {
+		    const id = element.getAttribute('data-id'); // Obtén el ID del atributo data-id
+		    if (confirm("¿Estás seguro de que deseas eliminar este entrenador?")) {
+		        fetch(`/entrenadores/eliminar/${id}`, {
+		            method: "DELETE",
+		        })
+		        .then(response => {
+		            if (response.ok) {
+		                alert("Entrenador eliminado con éxito");
+		                location.reload(); // Recarga la página después de eliminar
+		            } else {
+		                response.text().then(text => alert(`Error: ${text}`));
+		            }
+		        })
+		        .catch(error => console.error("Error:", error));
+		    }
+		}
+    </script>
+</body>
+</html>

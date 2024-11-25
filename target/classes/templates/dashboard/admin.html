@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard Administrador</title>
+</head>
+<style>
+	/* General reset */
+	        body {
+	            margin: 0;
+	            padding: 0;
+	            font-family: 'Roboto', sans-serif;
+	            background:url('/img/gym2.jpg') no-repeat center center fixed;
+	            background-size: cover;
+	            color: #f9f9f9;
+	            display: flex;
+	            flex-direction: column;
+	            align-items: center;
+	            min-height: 100vh;
+	            position: relative;
+	        }
+
+	        /* Capa de superposición */
+	        body::before {
+	            content: '';
+	            position: absolute;
+	            top: 0;
+	            left: 0;
+	            width: 100%;
+	            height: 100%;
+	            background: rgba(0, 0, 0, 0.6); /* Oscurece ligeramente la imagen de fondo */
+	            z-index: 0;
+	        }
+
+	        /* Encabezado */
+	        h1 {
+	            font-size: 3rem;
+	            color: #00d26a;
+	            margin-top: 2rem;
+	            margin-bottom: 2rem;
+	            text-align: center;
+	            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Agrega sombra al texto */
+	            z-index: 1;
+	            position: relative;
+	        }
+
+	        /* Lista de navegación */
+	        ul {
+	            list-style-type: none;
+	            padding: 0;
+	            margin: 0;
+	            display: flex;
+	            flex-direction: column;
+	            align-items: center;
+	            gap: 1.5rem;
+	            z-index: 1;
+	            position: relative;
+	        }
+
+	        /* Estilo de los enlaces */
+	        ul li a {
+	            text-decoration: none;
+	            font-size: 1.3rem;
+	            font-weight: 600;
+	            color: #fff;
+	            padding: 1rem 2rem;
+	            background: rgba(255, 255, 255, 0.15);
+	            border: 1px solid rgba(255, 255, 255, 0.2);
+	            border-radius: 10px;
+	            transition: all 0.3s ease;
+	            display: block;
+	            text-align: center;
+	            width: 250px; /* Ancho uniforme para todos los enlaces */
+	            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para destacar los enlaces */
+	        }
+
+	        ul li a:hover {
+	            background: #00d26a;
+	            border-color: #00b758;
+	            color: #0c0f0a;
+	            box-shadow: 0 6px 15px rgba(0, 210, 106, 0.4);
+	        }
+
+	        /* Botones específicos */
+	        ul li a.btn-primary {
+	            background: #00d26a;
+	            color: #0c0f0a;
+	            border: none;
+	            box-shadow: 0 4px 10px rgba(0, 210, 106, 0.4);
+	        }
+
+	        ul li a.btn-primary:hover {
+	            background: #00b758;
+	            box-shadow: 0 6px 15px rgba(0, 210, 106, 0.6);
+	        }
+
+	        /* Responsividad */
+	        @media (max-width: 768px) {
+	            h1 {
+	                font-size: 2rem;
+	            }
+
+	            ul li a {
+	                font-size: 1rem;
+	                width: 200px;
+	                padding: 0.8rem 1.5rem;
+	            }
+	        }
+			
+			a.btn-danger {
+			    position: relative;
+			    z-index: 1000;
+			}
+
+</style>
+
+<body>
+    <h1 th:text="'Bienvenido ' + ${session.usuario.nombre}">Bienvenido Admin</h1>
+    <ul>
+        <li><a href="/usuarios">Gestión de Usuarios</a></li>
+        <li><a href="/membresias">Gestión de Membresías</a></li>
+        <li><a href="/admin/clases">Gestión de Clases</a></li>
+		<li><a href="/horarios/gestionar" class="btn btn-primary">Gestión de Horarios</a></li>
+		<li><a th:href="@{/calendario}">Calendario</a></li>
+		<li><a th:href="@{/resumen/resumen-reservas}">Resumen Reservas</a></li>
+		<li><a href="/entrenadores/lista">Gestión de Entrenadores</a></li>
+
+    </ul>
+	<br><br><br>
+	<a href="/logout" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?');" style="background-color: #d9534f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;" class="btn btn-danger">Cerrar sesión</a>
+</body>
+</html>

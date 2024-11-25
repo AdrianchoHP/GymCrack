@@ -1,0 +1,21 @@
+<!-- resources/templates/entrenadores/formulario-editar.html -->
+<div id="formulario-editar">
+    <h2 th:text="'Editar Entrenador: ' + ${entrenador.nombre}"></h2>
+    <form th:action="@{/entrenadores}" th:object="${entrenador}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" th:field="*{nombre}" required />
+
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" th:field="*{email}" required />
+
+        <label for="especialidad">Especialidad:</label>
+        <input type="text" id="especialidad" th:field="*{especialidad}" required />
+
+        <label for="disponibilidad">Disponibilidad:</label>
+        <textarea id="disponibilidad" th:field="*{disponibilidad}" rows="3"></textarea>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</div>

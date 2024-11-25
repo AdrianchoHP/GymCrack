@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Clases</title>
+</head>
+<body>
+    <h1>Mis Clases Asignadas</h1>
+    <div th:if="${error}">
+        <p th:text="${error}" style="color: red;"></p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha y Hora</th>
+                <th>Capacidad Máxima</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="clase : ${clases}">
+                <tr>
+                    <td th:text="${clase.nombre}">Nombre de la Clase</td>
+                    <td th:text="${clase.fechaHora}">Fecha y Hora</td>
+                    <td th:text="${clase.capacidadMaxima}">Capacidad</td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+</body>
+</html>

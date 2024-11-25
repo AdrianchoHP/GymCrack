@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nueva Clase</title>
+    <style>
+        /* General reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0c0f0a, #2d2e2d);
+            color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Contenedor general */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Botón Volver */
+        .btn-back {
+            background: #00d26a;
+            color: #0c0f0a;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            position: absolute;
+            top: -50px;
+            left: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-back:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Títulos */
+        .container h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00d26a;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Formularios */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        form label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #f9f9f9;
+            text-align: left;
+            width: 100%;
+        }
+
+        form input, form select, form button {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: #f9f9f9;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        form input:focus, form select:focus {
+            border-color: #00d26a;
+            box-shadow: 0 0 5px rgba(0, 210, 106, 0.5);
+        }
+
+        form select option {
+            background: #0c0f0a;
+            color: #f9f9f9;
+        }
+
+        form input[type="color"] {
+            height: 3rem;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        form button {
+            background: #00d26a;
+            border: none;
+            color: #0c0f0a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        form button:hover {
+            background: #00b758;
+            transform: scale(1.05);
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .btn-back {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+
+            form input, form select, form button {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="btn-back" onclick="window.location.href='/clases'">Volver</button>
+        <h1>Registrar Nueva Clase</h1>
+        <form th:object="${clase}" method="post" th:action="@{/clases}">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" required />
+
+            <label for="categoria">Categoría:</label>
+            <input type="text" id="categoria" th:field="*{categoria}" required />
+
+            <label for="capacidadMaxima">Capacidad Máxima:</label>
+            <input type="number" id="capacidadMaxima" th:field="*{capacidadMaxima}" required />
+
+            <label for="fechaHora">Fecha y Hora:</label>
+            <input type="datetime-local" id="fechaHora" th:field="*{fechaHora}" required />
+
+            <label for="colorIdentificador">Color Identificador:</label>
+            <input type="color" id="colorIdentificador" th:field="*{colorIdentificador}" />
+
+            <label for="entrenadorId">Entrenador:</label>
+            <select id="entrenadorId" th:field="*{entrenadorId}">
+                <option value="">Seleccione un entrenador</option>
+                <option th:each="entrenador : ${entrenadores}"
+                        th:value="${entrenador.id}"
+                        th:text="${entrenador.nombre}"></option>
+            </select>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</body>
+</html>
